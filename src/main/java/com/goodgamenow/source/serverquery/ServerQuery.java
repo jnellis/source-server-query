@@ -1,15 +1,27 @@
+/*
+ * ServerQuery.java
+ *
+ * Copyright (c) 2016.  Joe Nellis
+ * Distributed under MIT License. See accompanying file License.txt or at
+ * http://opensource.org/licenses/MIT
+ *
+ */
+
 package com.goodgamenow.source.serverquery;
 
+import net.jcip.annotations.Immutable;
+
 import java.net.InetSocketAddress;
+import java.util.Objects;
 
 /**
- * Represents a Source Server Query. The query can be one of three types:
+ * Represents a Source Server Query that indicates need for
  * server info, player info, or server rules.
  * <p>
- * User: Joe Nellis
- * Date: 5/21/2015
- * Time: 11:55 PM
+ * ServerQuery objects are immutable and are created instead of updated
+ * via the constructor.
  */
+@Immutable
 public class ServerQuery {
 
   private static final long DEFAULT_TIMEOUT = 500L;
@@ -46,7 +58,18 @@ public class ServerQuery {
   }
 
   /**
-   * Creates a fully detailed query.
+   * Constructor to create a fully detailed query.
+   * <p>
+   * Example of updating a query after no players were found from the
+   * serverInfo response but serverRules still need to be requested:
+   * <pre>{@code
+   * ServerQuery updated = new ServerQuery(query.address,
+   *                                       ServerInfoRequest.NOT_NEEDED,
+   *                                       PlayerInfoRequest.NOT_NEEDED,
+   *                                       query.serverRulesRequest,
+   *                                       Retries.MAX_RETRIES,
+   *                                       query.challenge);
+   * }</pre>
    *
    * @param address           socket address
    * @param serverInfoNeeded  if a server info request is attempted
@@ -61,6 +84,7 @@ public class ServerQuery {
                      ServerRulesRequest serverRulesNeeded,
                      Retries retries,
                      Challenge challenge) {
+    Objects.requireNonNull(address, "Socket address can't be null");
     this.address = address;
     this.serverInfoRequest = serverInfoNeeded;
     this.playerInfoRequest = playerInfoNeeded;
@@ -70,9 +94,10 @@ public class ServerQuery {
     this.startTime = StartTime.now();  // all query timers start at creation
   }
 
+
   @Override
   public int hashCode() {
-    return address.hashCode();
+    return Objects.hash(address, startTime);
   }
 
   @Override
@@ -80,35 +105,46 @@ public class ServerQuery {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof ServerQuery)) {
+    if ((null == o) || (getClass() != o.getClass())) {
       return false;
     }
-
     ServerQuery that = (ServerQuery) o;
-
-    return address.equals(that.address);
+    return Objects.equals(address, that.address) &&
+        Objects.equals(startTime, that.startTime);
   }
 
   @Override
   public String toString() {
-    final StringBuilder sb = new StringBuilder("ServerQuery{");
-    sb.append("address=").append(address);
-    sb.append(", serverInfoRequest=").append(serverInfoRequest.isNeeded());
-    sb.append(", playerInfoRequest=").append(playerInfoRequest.isNeeded());
-    sb.append(", serverRulesRequest=").append(serverRulesRequest.isNeeded());
-    sb.append(", retries=").append(retries.remaining());
-    sb.append(", challenge=").append(challenge.number());
-    sb.append(", startTime=").append(startTime.inMillis());
-    sb.append('}');
-    return sb.toString();
+    return "ServerQuery{" +
+        "address=" + address +
+        ", serverInfoRequest=" + serverInfoRequest +
+        ", playerInfoRequest=" + playerInfoRequest +
+        ", serverRulesRequest=" + serverRulesRequest +
+        ", retries=" + retries +
+        ", challenge=" + challenge +
+        ", startTime=" + startTime +
+        '}';
   }
 
+  /**
+   * Returns true is ServerInfoRequest, PlayerInfoRequest and ServerRulesRequest
+   * are not needed anymore.
+   *
+   * @return true if done.
+   */
   public boolean isFinished() {
     return !(serverInfoRequest.isNeeded()
         || playerInfoRequest.isNeeded()
         || serverRulesRequest.isNeeded());
   }
 
+  /**
+   * Compares this query object's construction timestamp with now and the
+   * default
+   * timeout limit. Use {@link #isTimedOut(long)} to specify a timeout limit.
+   *
+   * @return true if this query has not finished by now.
+   */
   public boolean isTimedOut() {
     return isTimedOut(DEFAULT_TIMEOUT);
   }
@@ -120,10 +156,9 @@ public class ServerQuery {
   }
 
   @FunctionalInterface
-  public interface BooleanParameter<T> {
+  public interface BooleanParameter {
 
     boolean isNeeded();
-
   }
 
   @FunctionalInterface

@@ -23,15 +23,17 @@ import java.util.List;
 class MasterQueryHandler
     extends SimpleChannelInboundHandler<DatagramPacket> {
 
+  final int ADDR_WIDTH = 6;   // ip addr bytes 1.2.3.4:56
+
   private final MasterQuery query;
 
   private final List<String> results;
 
+  private final InetSocketAddress masterAddress;
+
   private String lastAddress;
 
   private long startTime, finishTime;
-
-  private final InetSocketAddress masterAddress;
 
   public MasterQueryHandler(MasterQuery query,
                             List<String> results) {
@@ -46,18 +48,29 @@ class MasterQueryHandler
     return results;
   }
 
+  /**
+   * Decodes a master server response datagram packet into a list of
+   * game server addresses.
+   *
+   * @param ctx
+   * @param msg
+   * @exception UnsupportedEncodingException
+   */
   @Override
   protected final void channelRead0(ChannelHandlerContext ctx,
                                     DatagramPacket msg)
       throws UnsupportedEncodingException {
-
     ByteBuf buf = msg.content();
+
+    // sanity check
+    assert buf.readableBytes() % ADDR_WIDTH == 0 :
+        "Master response byte count is not 6 byte aligned.";
 
     // decode response header
     String header = decodeIpAddress(buf);
     assert MasterQuery.EXPECTED_HEADER_STRING.equals(header);
 
-    while (buf.isReadable(6)) {
+    while (buf.isReadable(ADDR_WIDTH)) {
       lastAddress = decodeIpAddress(buf);
       // A last address of 0.0.0.0:0 denotes the end of transmission.
       if (MasterQuery.DEFAULT_IP.equals(lastAddress)) {
@@ -73,20 +86,26 @@ class MasterQueryHandler
     this.channelActive(ctx);
   }
 
+
+  /**
+   * Decodes the address and port from a six byte representation
+   * 001.002.003.004:00056
+   *
+   * @param buf master server response buffer
+   * @return ipaddress:port representation
+   */
   private static String decodeIpAddress(ByteBuf buf) {
     assert 0 == (buf.readableBytes() % 6);
 
     return String.valueOf(decodeAddress(buf) + ':' + decodePort(buf));
   }
 
-  long getRuntime() {
-    long result = finishTime - startTime;
-    if (0L > result) {
-      result = 0L;
-    }
-    return result;
-  }
-
+  /**
+   * Fires a Datagram packet with its associated query to the master server.
+   *
+   * @param ctx
+   * @exception UnsupportedEncodingException
+   */
   @Override
   public final void channelActive(ChannelHandlerContext ctx)
       throws UnsupportedEncodingException {
@@ -119,6 +138,15 @@ class MasterQueryHandler
 
   private static int decodePort(ByteBuf buf) {
     return buf.readShort();
+  }
+
+
+  long getRuntime() {
+    long result = finishTime - startTime;
+    if (0L > result) {
+      result = 0L;
+    }
+    return result;
   }
 
 }

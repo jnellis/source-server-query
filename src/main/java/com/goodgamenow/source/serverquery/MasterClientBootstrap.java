@@ -13,11 +13,20 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * Creates a bootstrap to bind a channel to the Source master server and
+ * serve a request for game servers matching a filter.
+ *
  * Assumes an operation of one query per channel at a time.
- * <p>
- * User: Joe Nellis
- * Date: 1/24/2016
- * Time: 6:58 PM
+ *
+ * Usage:
+ * <pre><code>
+ *   Bootstrap mcb = new MasterClientBootstrap(eventLoop, query);
+ *   ChannelFuture future = mcb.bind(0);
+ *   future.channel().closeFuture().addListener( (fut)-> {
+ *      List addresses = mcb.getResults();
+ *      // do something with these.
+ *   });
+ * </code></pre>
  */
 public class MasterClientBootstrap extends Bootstrap {
 
@@ -39,7 +48,7 @@ public class MasterClientBootstrap extends Bootstrap {
           @Override
           protected void initChannel(DatagramChannel ch) {
             ch.pipeline()
-              //    .addLast(new LoggingHandler(LogLevel.INFO))
+              //.addLast(new LoggingHandler(LogLevel.INFO))
               .addLast(queryHandler)
             ;
           }

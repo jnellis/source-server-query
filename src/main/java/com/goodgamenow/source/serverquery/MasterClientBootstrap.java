@@ -1,11 +1,18 @@
+/*
+ * MasterClientBootstrap.java
+ *
+ * Copyright (c) 2016.  Joe Nellis
+ * Distributed under MIT License. See accompanying file License.txt or at
+ * http://opensource.org/licenses/MIT
+ *
+ */
+
 package com.goodgamenow.source.serverquery;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
-import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.socket.DatagramChannel;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 
 import java.util.ArrayList;
@@ -19,14 +26,14 @@ import java.util.List;
  * Assumes an operation of one query per channel at a time.
  *
  * Usage:
- * <pre><code>
+ * <pre>{@code
  *   Bootstrap mcb = new MasterClientBootstrap(eventLoop, query);
  *   ChannelFuture future = mcb.bind(0);
  *   future.channel().closeFuture().addListener( (fut)-> {
  *      List addresses = mcb.getResults();
  *      // do something with these.
  *   });
- * </code></pre>
+ * }</pre>
  */
 public class MasterClientBootstrap extends Bootstrap {
 
@@ -42,17 +49,9 @@ public class MasterClientBootstrap extends Bootstrap {
 
     this.group(eventLoopGroup)
         .channel(NioDatagramChannel.class)
-        .option(ChannelOption.SO_BROADCAST, true)
+        .option(ChannelOption.SO_BROADCAST, Boolean.TRUE)
         .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
-        .handler(new ChannelInitializer<DatagramChannel>() {
-          @Override
-          protected void initChannel(DatagramChannel ch) {
-            ch.pipeline()
-              //.addLast(new LoggingHandler(LogLevel.INFO))
-              .addLast(queryHandler)
-            ;
-          }
-        })
+        .handler(queryHandler)
     ;
   }
 

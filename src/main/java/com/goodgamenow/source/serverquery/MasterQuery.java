@@ -1,7 +1,17 @@
+/*
+ * MasterQuery.java
+ *
+ * Copyright (c) 2016.  Joe Nellis
+ * Distributed under MIT License. See accompanying file License.txt or at
+ * http://opensource.org/licenses/MIT
+ *
+ */
+
 package com.goodgamenow.source.serverquery;
 
 import net.jcip.annotations.Immutable;
 
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -15,54 +25,14 @@ import java.util.Optional;
 public class MasterQuery {
 
   /**
-   * Master server location
-   */
-  public static final String MASTER_SERVER = "hl2master.steampowered.com";
-
-  /**
-   * Master server port
-   */
-  public static final int MASTER_SERVER_PORT = 27011;
-
-  /**
-   * First byte of the request packet.
-   */
-  public static final int MSG_TYPE = 0x31;
-
-  /**
-   * Initial ip of the request packet and
-   * marker string for when the last query result is received.
-   */
-  public static final String DEFAULT_IP = "0.0.0.0:0";
-
-  /**
-   * Master server strings are null terminated
-   */
-  public static final int NULL_TERMINATOR = 0;
-
-  /**
-   * The expected response header string
-   */
-  public static final String EXPECTED_HEADER_STRING = "255.255.255.255:26122";
-
-  /**
    * Search the world(other) region by default.
    */
   private static final Region DEFAULT_REGION = Region.WORLD;
-
-  // Request defaults
 
   /**
    * Default query filter.
    */
   private static final String DEFAULT_FILTER = "";
-
-  /**
-   * Index in query buffer where the IP:Port information begins. This is
-   * used to change the buffer to the last address received so the query
-   * can be resent for more paged results.
-   */
-  static final int LAST_ADDRESS_INDEX = 2;
 
   /**
    * Region request field.
@@ -90,26 +60,20 @@ public class MasterQuery {
 
   @Override
   public int hashCode() {
-    int result = region.hashCode();
-    result = 31 * result + filter.hashCode();
-    return result;
+    return Objects.hash(region, filter);
   }
 
   @Override
   public boolean equals(Object o) {
-    if (this == o)
+    if (this == o) {
       return true;
-    if (!(o instanceof MasterQuery))
+    }
+    if (!(o instanceof MasterQuery)) {
       return false;
-
-    MasterQuery that = (MasterQuery) o;
-
-    if (region != that.region)
-      return false;
-    return filter.equals(that.filter);
-
+    }
+    MasterQuery query = (MasterQuery) o;
+    return (region == query.region) && Objects.equals(filter, query.filter);
   }
-
 
   /**
    * Region Codes

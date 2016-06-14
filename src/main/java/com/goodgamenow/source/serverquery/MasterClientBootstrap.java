@@ -15,8 +15,6 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -37,15 +35,12 @@ import java.util.List;
  */
 public class MasterClientBootstrap extends Bootstrap {
 
-  private final List<String> results =
-      Collections.synchronizedList(new ArrayList<>());
-
   private final MasterQueryHandler queryHandler;
 
   public MasterClientBootstrap(EventLoopGroup eventLoopGroup,
                                MasterQuery query) {
 
-    this.queryHandler = new MasterQueryHandler(query, results);
+    this.queryHandler = new MasterQueryHandler(query);
 
     this.group(eventLoopGroup)
         .channel(NioDatagramChannel.class)
@@ -56,7 +51,7 @@ public class MasterClientBootstrap extends Bootstrap {
   }
 
   public List<String> getResults() {
-    return Collections.unmodifiableList(results);
+    return queryHandler.getResults();
   }
 
   public long getRuntime() {

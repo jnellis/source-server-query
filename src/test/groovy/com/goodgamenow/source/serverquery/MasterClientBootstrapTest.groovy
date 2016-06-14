@@ -1,3 +1,12 @@
+/*
+ * MasterClientBootstrapTest.groovy
+ *
+ * Copyright (c) 2016.  Joe Nellis
+ * Distributed under MIT License. See accompanying file License.txt or at
+ * http://opensource.org/licenses/MIT
+ *
+ */
+
 package com.goodgamenow.source.serverquery
 
 import io.netty.channel.ChannelFuture
@@ -19,6 +28,18 @@ class MasterClientBootstrapTest extends Specification {
 
   void cleanup() {
     eventLoopGroup?.shutdownGracefully()
+  }
+
+  def "Region match"() {
+    expect:
+    MasterQuery.Region.valueOf("USWEST").equals(MasterQuery.Region.USWEST);
+    MasterQuery.Region.valueOf("USEAST").equals(MasterQuery.Region.USEAST);
+    MasterQuery.Region.valueOf("SAMERICA").equals(MasterQuery.Region.SAMERICA);
+    MasterQuery.Region.valueOf("EUROPE").equals(MasterQuery.Region.EUROPE);
+    MasterQuery.Region.valueOf("ASIA").equals(MasterQuery.Region.ASIA);
+    MasterQuery.Region.valueOf("AUSTRALIA").equals(MasterQuery.Region.AUSTRALIA);
+    MasterQuery.Region.valueOf("MIDEAST").equals(MasterQuery.Region.MIDEAST);
+    MasterQuery.Region.valueOf("AFRICA").equals(MasterQuery.Region.AFRICA);
   }
 
   def "MasterQuery: Tf2, not empty, secure, dedicated"() {

@@ -3,6 +3,7 @@ package com.goodgamenow.source.serverquery;
 import com.goodgamenow.source.serverquery.response.QueryResult;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.socket.nio.NioDatagramChannel;
@@ -27,9 +28,13 @@ public class ServerQueryBootstrap extends Bootstrap {
   private final ServerQueryChannelInitializer initializer;
 
   public ServerQueryBootstrap(EventLoopGroup eventLoopGroup) {
+    this(eventLoopGroup, null);
+  }
 
-    this.initializer = new ServerQueryChannelInitializer();
+  public ServerQueryBootstrap(EventLoopGroup eventLoopGroup,
+                              ChannelHandlerContext parentContext) {
 
+    this.initializer = new ServerQueryChannelInitializer(parentContext);
     this.group(eventLoopGroup)
         .channel(NioDatagramChannel.class)
         .option(ChannelOption.SO_BROADCAST, true)
@@ -40,6 +45,7 @@ public class ServerQueryBootstrap extends Bootstrap {
         .option(ChannelOption.WRITE_BUFFER_LOW_WATER_MARK, 8 * 1024)
         .handler(initializer)
     ;
+
   }
 
   /**
@@ -96,6 +102,10 @@ public class ServerQueryBootstrap extends Bootstrap {
       }
     }
     return Optional.ofNullable(socketAddress);
+  }
+
+  public boolean reconciliationMapsAreEmpty() {
+    return initializer.reconciliationMapsAreEmpty();
   }
 
   public Collection<QueryResult> getQueryResults() {

@@ -34,6 +34,9 @@ public class MasterQuery {
    */
   private static final String DEFAULT_FILTER = "";
 
+
+
+
   /**
    * Region request field.
    */
@@ -43,6 +46,32 @@ public class MasterQuery {
    * A '\' delimited collection of filter codes in string form.
    */
   public final String filter;
+
+  /**
+   * template to use when creating server query objects from results.
+   */
+  public final ServerQuery template;
+
+
+  /**
+   * Same as MasterQuery but with
+   *
+   * @param region           One of the server regions in the world
+   * @param filter           A filter to narrow down the search.
+   * @param template         A template to model new server queries from
+   *                         the results.
+   */
+  public MasterQuery(Region region,
+                     String filter,
+                     ServerQuery template) {
+    this.region = Optional.ofNullable(region)
+                          .orElse(DEFAULT_REGION);
+
+    this.filter = Optional.ofNullable(filter)
+                          .orElse(DEFAULT_FILTER);
+
+    this.template = template;
+  }
 
   /**
    * Query objects are immutable as to the region and type of query(filter.)
@@ -56,6 +85,9 @@ public class MasterQuery {
 
     this.filter = Optional.ofNullable(filter)
                           .orElse(DEFAULT_FILTER);
+
+    this.template = ServerQuery.DEFAULT_SERVER_QUERY_TEMPLATE;
+
   }
 
   @Override

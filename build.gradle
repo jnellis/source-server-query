@@ -14,20 +14,26 @@ idea {
   }
 }
 
-mainClassName = 'com.goodgamenow.source.serverquery.Client'
+compileJava.options.compilerArgs << "-Xlint:unchecked"
+//<< "-Xlint:deprecation"
+mainClassName = 'com.goodgamenow.source.serverquery.websocketserver.GameServerRequestServer'
 
-// In this section you declare where to find the dependencies of your project
+
+
 repositories {
-  // Use 'jcenter' for resolving your dependencies.
-  // You can declare any Maven/Ivy/file repository here.
   jcenter()
 }
 
-// In this section you declare the dependencies for your production and test code
 dependencies {
-  compile 'io.netty:netty-all:4.0.36.Final'
+  compile 'com.google.guava:guava:18.0'
+  compile 'com.google.inject:guice:4.0'
+  compile 'io.netty:netty-all:4.1.2.Final'
   compile 'net.jcip:jcip-annotations:1.0'
   compile 'org.itadaki:bzip2:0.9.1'
+  compile 'org.codehaus.groovy:groovy-all:2.4.6'
+  compile 'com.fasterxml.jackson.core:jackson-core:2.8.0'
+  compile 'com.fasterxml.jackson.core:jackson-annotations:2.8.0'
+  compile 'com.fasterxml.jackson.core:jackson-databind:2.8.0'
 
   compile 'org.apache.logging.log4j:log4j-api:2.6'
   compile 'org.apache.logging.log4j:log4j-core:2.6'

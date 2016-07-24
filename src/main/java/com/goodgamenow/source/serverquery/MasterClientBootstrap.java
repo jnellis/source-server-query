@@ -11,6 +11,7 @@ package com.goodgamenow.source.serverquery;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.socket.nio.NioDatagramChannel;
@@ -39,8 +40,14 @@ public class MasterClientBootstrap extends Bootstrap {
 
   public MasterClientBootstrap(EventLoopGroup eventLoopGroup,
                                MasterQuery query) {
+      this(eventLoopGroup,query,null);
+  }
 
-    this.queryHandler = new MasterQueryHandler(query);
+  public MasterClientBootstrap(EventLoopGroup eventLoopGroup,
+                               MasterQuery query,
+                               ChannelHandlerContext parentContext) {
+
+    this.queryHandler = new MasterQueryHandler(query, parentContext);
 
     this.group(eventLoopGroup)
         .channel(NioDatagramChannel.class)

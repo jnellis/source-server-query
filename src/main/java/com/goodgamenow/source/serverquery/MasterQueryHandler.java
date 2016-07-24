@@ -68,9 +68,12 @@ class MasterQueryHandler
 
   private final MasterQuery query;
 
+  private final InetSocketAddress masterAddress =
+      new InetSocketAddress(MASTER_SERVER, MASTER_SERVER_PORT);
+
   private final List<String> results;
 
-  private final InetSocketAddress masterAddress;
+  private final ChannelHandlerContext parentContext;
 
   private String lastAddress;
 
@@ -78,24 +81,30 @@ class MasterQueryHandler
 
   private long finishTime;
 
-  MasterQueryHandler(MasterQuery query) {
+  public MasterQueryHandler(MasterQuery query) {
+    this(query, null);
+  }
+
+  MasterQueryHandler(MasterQuery query,
+                     ChannelHandlerContext parentContext) {
+    this.parentContext = parentContext;
     this.query = query;
     this.lastAddress = DEFAULT_IP;
-    this.results = new ArrayList<>();
-    this.masterAddress = new InetSocketAddress(MASTER_SERVER,
-                                               MASTER_SERVER_PORT);
+    this.results = (parentContext == null) ? new ArrayList<>() : null;
   }
 
   public List<String> getResults() {
-    return Collections.unmodifiableList(results);
+    return (results == null) ?
+           Collections.emptyList() :
+           Collections.unmodifiableList(results);
   }
 
   /**
    * Decodes a master server response datagram packet into a list of
    * game server addresses.
    *
-   * @param ctx  channel handler context
-   * @param msg  master server response packet
+   * @param ctx channel handler context
+   * @param msg master server response packet
    * @exception UnsupportedEncodingException
    */
   @Override
@@ -122,13 +131,28 @@ class MasterQueryHandler
         finishTime = System.currentTimeMillis();
         return;
       }
-      results.add(lastAddress);
+
+      if (parentContext != null) {
+        InetSocketAddress address = createInetSocketAddress(lastAddress);
+        ServerQuery template = query.template;
+        ServerQuery squery = ServerQuery.createFromTemplate(address, template);
+        parentContext.fireChannelRead(squery);
+      } else {
+        if (results == null) {   // should never happen
+          throw new IllegalStateException(
+              "Results container is null when there is no other " +
+                  "ChannelHandlerContext to send results.");
+        }
+        // we are storing for bulk access later.
+        results.add(lastAddress);
+      }
+
     }
+
     assert buf.readableBytes() == 0;
     // ask for more results
     this.channelActive(ctx);
   }
-
 
   /**
    * Decodes the address and port from a six byte representation
@@ -143,10 +167,17 @@ class MasterQueryHandler
     return String.valueOf(decodeAddress(buf) + ':' + decodePort(buf));
   }
 
+  private final InetSocketAddress createInetSocketAddress(String
+                                                              serverAddress) {
+    String[] addy = serverAddress.split(":");
+    int port = Integer.parseInt(addy[1]);
+    return new InetSocketAddress(addy[0], port);
+  }
+
   /**
    * Fires a Datagram packet with its associated query to the master server.
    *
-   * @param ctx  channel handler context
+   * @param ctx channel handler context
    * @exception UnsupportedEncodingException
    */
   @Override
@@ -170,6 +201,13 @@ class MasterQueryHandler
     // back to master will give us another page.
     ctx.writeAndFlush(new DatagramPacket(buf, masterAddress));
   }
+
+//  @Override
+//  public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+//    if(parentContext != null){
+//      parentContext.flush();
+//    }
+//  }
 
   private static String decodeAddress(ByteBuf buf) {
     return "" +

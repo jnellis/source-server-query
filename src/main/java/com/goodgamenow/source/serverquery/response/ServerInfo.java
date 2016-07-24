@@ -312,6 +312,7 @@ public class ServerInfo extends ServerResponse{
                         : query.playerInfoRequest;
 
     return new ServerQuery(query.address,
+                           query.queryId,
                            ServerQuery.ServerInfoRequest.NOT_NEEDED,
                            playerInfoRequest,
                            query.serverRulesRequest,
@@ -347,4 +348,5 @@ public class ServerInfo extends ServerResponse{
         + '\'' + ", keywords='" + keywords + '\'' + ", gameId=" + gameId + ',' +
         " latency=" + latency() + '}';
   }
+
 }

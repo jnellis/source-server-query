@@ -1,6 +1,7 @@
 package com.goodgamenow.source.serverquery
 
 import io.netty.channel.nio.NioEventLoopGroup
+import io.netty.util.ResourceLeakDetector
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import spock.lang.Specification
@@ -21,6 +22,7 @@ class ServerQueryBootstrapTest extends Specification {
   void setup() {
     group = new NioEventLoopGroup()
     logger = LogManager.logger
+    ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.PARANOID)
   }
 
   def "Create socket from invalid address"() {
@@ -47,6 +49,7 @@ class ServerQueryBootstrapTest extends Specification {
     def bootstrap = new ServerQueryBootstrap(group)
     def future = bootstrap.bind(0).sync()
     def serverQuery =  new ServerQuery(ipaddr,
+            "noid",
             ServerQuery.ServerInfoRequest.NEEDED,
             ServerQuery.PlayerInfoRequest.NEEDED,
             ServerQuery.ServerRulesRequest.NEEDED,

@@ -2,6 +2,7 @@ package com.goodgamenow.source.serverquery;
 
 import com.goodgamenow.source.serverquery.response.QueryResult;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.DatagramChannel;
 import io.netty.handler.logging.LogLevel;
@@ -35,8 +36,10 @@ public class ServerQueryChannelInitializer
   // singleton message handlers
   private final ServerQueryPump serverQueryPump;
 
+  private final ChannelHandlerContext parentContext;
 
-  public ServerQueryChannelInitializer() {
+  public ServerQueryChannelInitializer(ChannelHandlerContext parentContext) {
+    this.parentContext = parentContext;
     this.reconcileMaps = new ConcurrentHashMap<>();
     this.queryResultMap = new ConcurrentHashMap<>();
     serverQueryPump = new ServerQueryPump(reconcileMaps);
@@ -57,7 +60,8 @@ public class ServerQueryChannelInitializer
                                                         DEFAULT_TIME_UNIT))
       .addLast("pump", serverQueryPump)
       .addLast("query-result", new QueryResultHandler(reconciliationMap,
-                                                      queryResultMap))
+                                                      queryResultMap,
+                                                      parentContext))
     ;
   }
 

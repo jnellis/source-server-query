@@ -43,6 +43,7 @@ public class PlayerInfos extends ServerResponse {
   @Override
   public ServerQuery update(ServerQuery query) {
     return new ServerQuery(query.address,
+                           query.queryId,
                            query.serverInfoRequest,
                            ServerQuery.PlayerInfoRequest.NOT_NEEDED,
                            query.serverRulesRequest,

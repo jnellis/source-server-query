@@ -86,6 +86,7 @@ public class ServerQueryPump extends ChannelDuplexHandler {
                 }
                 ServerQuery updatedQuery =
                     new ServerQuery(query.address,
+                                    query.queryId,
                                     query.serverInfoRequest,
                                     query.playerInfoRequest,
                                     query.serverRulesRequest,

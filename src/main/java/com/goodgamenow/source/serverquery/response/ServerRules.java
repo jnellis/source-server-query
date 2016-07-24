@@ -46,6 +46,7 @@ public class ServerRules extends ServerResponse {
   @Override
   public ServerQuery update(ServerQuery query) {
     return new ServerQuery(query.address,
+                           query.queryId,
                            query.serverInfoRequest,
                            query.playerInfoRequest,
                            ServerQuery.ServerRulesRequest.NOT_NEEDED,

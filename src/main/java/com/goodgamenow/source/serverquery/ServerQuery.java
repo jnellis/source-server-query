@@ -24,7 +24,20 @@ import java.util.Objects;
 @Immutable
 public class ServerQuery {
 
+  public static final ServerQuery DEFAULT_SERVER_QUERY_TEMPLATE =
+      new ServerQuery(new InetSocketAddress("127.0.0.1", 0),
+                      ServerQuery.NO_ID,
+                      ServerQuery.ServerInfoRequest.NEEDED,
+                      ServerQuery.PlayerInfoRequest.NEEDED,
+                      ServerQuery.ServerRulesRequest.NOT_NEEDED,
+                      ServerQuery.Retries.MAX_RETRIES,
+                      ServerQuery.Challenge.RESET);
+
+  public static final String NO_ID = "noid";
+
   private static final long DEFAULT_TIMEOUT = 500L;
+
+  public final String queryId;
 
   public final InetSocketAddress address;
 
@@ -50,6 +63,7 @@ public class ServerQuery {
    */
   public ServerQuery(InetSocketAddress address) {
     this(address,
+         ServerQuery.NO_ID,
          ServerInfoRequest.NEEDED,
          PlayerInfoRequest.NEEDED,
          ServerRulesRequest.NOT_NEEDED,
@@ -72,6 +86,7 @@ public class ServerQuery {
    * }</pre>
    *
    * @param address           socket address
+   * @param queryId           A user supplied id for grouping queries
    * @param serverInfoNeeded  if a server info request is attempted
    * @param playerInfoNeeded  if a player info request is attempted
    * @param serverRulesNeeded if server environment variables are requested
@@ -79,6 +94,7 @@ public class ServerQuery {
    * @param challenge         the challenge number assigned from the server
    */
   public ServerQuery(InetSocketAddress address,
+                     String queryId,
                      ServerInfoRequest serverInfoNeeded,
                      PlayerInfoRequest playerInfoNeeded,
                      ServerRulesRequest serverRulesNeeded,
@@ -86,6 +102,7 @@ public class ServerQuery {
                      Challenge challenge) {
     Objects.requireNonNull(address, "Socket address can't be null");
     this.address = address;
+    this.queryId = queryId;
     this.serverInfoRequest = serverInfoNeeded;
     this.playerInfoRequest = playerInfoNeeded;
     this.serverRulesRequest = serverRulesNeeded;
@@ -94,6 +111,22 @@ public class ServerQuery {
     this.startTime = StartTime.now();  // all query timers start at creation
   }
 
+  public static ServerQuery createFromTemplate(InetSocketAddress address,
+                                               ServerQuery template) {
+    return createFromTemplate(address, template, template.queryId);
+  }
+
+  public static ServerQuery createFromTemplate(InetSocketAddress address,
+                                               ServerQuery template,
+                                               String queryId) {
+    return new ServerQuery(address,
+                           queryId,
+                           template.serverInfoRequest,
+                           template.playerInfoRequest,
+                           template.serverRulesRequest,
+                           template.retries,
+                           template.challenge);
+  }
 
   @Override
   public int hashCode() {

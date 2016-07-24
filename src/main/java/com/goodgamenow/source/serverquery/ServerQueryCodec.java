@@ -105,7 +105,7 @@ class ServerQueryCodec
   protected void decode(ChannelHandlerContext ctx,
                         DatagramPacket packet,
                         List<Object> out) throws Exception {
-
+    logger.debug("decoding packet...");
     ByteBuf buf = packet.content().order(ByteOrder.LITTLE_ENDIAN);
 
     int type = buf.readInt();
@@ -297,8 +297,8 @@ class ServerQueryCodec
       throw new IllegalStateException("Unusually large string detected.");
     }
     //todo: check for malformed utf
-    String result = buf.readBytes(len).toString(Charset.forName("UTF-8"));
-    buf.skipBytes(1);//skip null terminator
+    String result = buf.toString(0,len,Charset.forName("UTF-8"));
+    buf.skipBytes(len+1);//skip null terminator
     return result;
   }
 

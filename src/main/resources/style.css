@@ -1,0 +1,17 @@
+body {
+    background: #e0ffff;
+
+}
+
+label {
+    margin-right: 2em;
+    display: inline-block;
+}
+
+input {
+    margin-left: 0.5em;
+}
+
+input[type=checkbox]{
+    float:right;
+}

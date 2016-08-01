@@ -62,7 +62,7 @@ class ServerQueryCodec
 
   private static final int MAX_SPLIT_PACKETS = 20;
 
-  private static final int MAX_DECODED_STRING_LENGTH = 140;
+  private static final int MAX_DECODED_STRING_LENGTH = 280;
 
   private static final Logger logger = LogManager.getLogger();
 
@@ -240,9 +240,9 @@ class ServerQueryCodec
         .vac(buf.readByte());
 
     // handle The Ship stuff here
-    if (serverInfo.appId() >= 2400 &&
-        serverInfo.appId() <= 2403 ||
-        serverInfo.appId() == 2412) {
+    if (serverInfo.getAppId() >= 2400 &&
+        serverInfo.getAppId() <= 2403 ||
+        serverInfo.getAppId() == 2412) {
       serverInfo.mode(buf.readByte())
                 .witness(buf.readByte())
                 .duration(buf.readByte());

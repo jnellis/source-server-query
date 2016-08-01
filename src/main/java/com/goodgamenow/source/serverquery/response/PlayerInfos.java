@@ -21,25 +21,6 @@ public class PlayerInfos extends ServerResponse {
     super(from);
   }
 
-//  @Override
-//  public ResultMerger resultMerger() {
-//    return resultMap ->
-//        resultMap.merge(from(),                // lookup key
-//                        new QueryResult(this), // nu value, never null
-//                        (orig, nu) -> orig.playerInfos(nu.playerInfos().get()));
-//  }
-//
-//  @Override
-//  public QueryUpdater queryUpdater() {
-//    return query ->
-//        new ServerQuery(query.address,
-//                        query.serverInfoRequest,
-//                        ServerQuery.PlayerInfoRequest.NOT_NEEDED,
-//                        query.serverRulesRequest,
-//                        ServerQuery.Retries.MAX_RETRIES,   // reset retries
-//                        query.challenge);
-//  }
-
   @Override
   public ServerQuery update(ServerQuery query) {
     return new ServerQuery(query.address,
@@ -59,7 +40,7 @@ public class PlayerInfos extends ServerResponse {
         (orig, nu) -> orig.playerInfos(nu.playerInfos().get()));
   }
 
-  public List<PlayerInfo> players() {
+  public List<PlayerInfo> getPlayers() {
     return players;
   }
 

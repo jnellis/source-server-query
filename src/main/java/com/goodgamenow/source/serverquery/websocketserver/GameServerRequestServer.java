@@ -10,10 +10,11 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.net.ssl.SSLException;
 import java.security.cert.CertificateException;
-import java.util.logging.Logger;
 
 /**
  * A local run server that provides game server statuses. Provides
@@ -26,8 +27,7 @@ public class GameServerRequestServer extends AbstractIdleService {
 
   static final int port = Integer.getInteger("PORT", NOSSL ? 80 : 443);
 
-  private static final Logger logger =
-      Logger.getLogger(GameServerRequestServer.class.toString());
+  private static Logger logger = LogManager.getLogger();
 
   private Channel webSocketServerChannel;
 
@@ -48,7 +48,8 @@ public class GameServerRequestServer extends AbstractIdleService {
   protected void startUp() throws CertificateException, SSLException {
     // Configure SSL.
     SelfSignedCertificate ssc = new SelfSignedCertificate();
-    SslContext sslCtx =  NOSSL ? null :SslContext.newServerContext(ssc.certificate(), ssc.privateKey());
+    SslContext sslCtx = NOSSL ? null : SslContext
+        .newServerContext(ssc.certificate(), ssc.privateKey());
 
     this.group = new NioEventLoopGroup();
 
@@ -56,7 +57,7 @@ public class GameServerRequestServer extends AbstractIdleService {
         .group(this.group)
         .channel(NioServerSocketChannel.class)
         .handler(new LoggingHandler(LogLevel.INFO))
-        .childHandler(new WebSocketServerChannelInitializer(sslCtx,"/ws"))
+        .childHandler(new WebSocketServerChannelInitializer(sslCtx, "/ws"))
         .bind(port)
         .channel();
 

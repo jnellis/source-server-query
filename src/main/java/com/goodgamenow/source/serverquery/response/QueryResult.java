@@ -1,5 +1,10 @@
 package com.goodgamenow.source.serverquery.response;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.IOException;
+import java.io.StringWriter;
+import java.net.InetSocketAddress;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.OptionalDouble;
@@ -9,7 +14,7 @@ import java.util.OptionalDouble;
  * Date: 6/26/2015
  * Time: 2:21 PM
  */
-public class QueryResult {
+public class QueryResult extends ResultBasics{
 
   private ServerInfo serverInfo;
 
@@ -19,19 +24,19 @@ public class QueryResult {
 
   private ChallengeResponse challenge;
 
-  private long[] latencies = new long[4];
-
   public QueryResult(ServerInfo serverInfo) {
+    super(serverInfo);
     this.serverInfo(serverInfo);
   }
 
   public final QueryResult serverInfo(ServerInfo serverInfo) {
     this.serverInfo = serverInfo;
-    latencies[0] = serverInfo.latency();
+    this.latencies[0] = serverInfo.latency();
     return this;
   }
 
   public QueryResult(PlayerInfos playerInfos) {
+    super(playerInfos);
     this.playerInfos(playerInfos);
   }
 
@@ -42,6 +47,8 @@ public class QueryResult {
   }
 
   public QueryResult(ServerRules serverRules) {
+
+    super(serverRules);
     this.serverRules(serverRules);
   }
 
@@ -52,6 +59,7 @@ public class QueryResult {
   }
 
   public QueryResult(ChallengeResponse challenge) {
+    super(challenge);
     this.challenge(challenge);
   }
 
@@ -65,7 +73,7 @@ public class QueryResult {
     return Optional.ofNullable(challenge);
   }
 
-  public Optional<ServerInfo> serverInfo() {
+  public Optional<ServerInfo> getServerInfo() {
     return Optional.ofNullable(serverInfo);
   }
 
@@ -77,9 +85,43 @@ public class QueryResult {
     return Optional.ofNullable(serverRules);
   }
 
+  public String toJson(ObjectMapper mapper) {
+    try {
+      StringWriter writer = new StringWriter();
+      writer.append("{")
+            .append("\"from\":\"")
+            .append(this.from.toString())
+            .append("\"");
+
+
+      if (serverInfo != null) {
+        writer.append(", \"serverInfo\":");
+        mapper.writeValue(writer, serverInfo);
+      }
+      if (playerInfos != null) {
+        writer.append(", \"playerInfos\":");
+        mapper.writeValue(writer, playerInfos);
+      }
+      if (serverRules != null) {
+        writer.append(", \"serverRules\":");
+        mapper.writeValue(writer, serverRules);
+      }
+      OptionalDouble avgLatency = averageLatency();
+      if (avgLatency.isPresent()) {
+        writer.append(", \"avgLatency\":");
+        mapper.writeValue(writer, avgLatency.getAsDouble());
+      }
+      writer.append("}").flush();
+      return writer.toString();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return "";
+  }
+
   public OptionalDouble averageLatency() {
     return Arrays.stream(latencies)
-                 .filter(l -> l > 0)
+                 .filter(latency -> latency > 0)
                  .average();
 
   }
@@ -87,9 +129,17 @@ public class QueryResult {
   @Override
   public String toString() {
     final StringBuilder sb = new StringBuilder("QueryResult{");
-    sb.append("serverInfo=").append(serverInfo);
+    sb.append("getServerInfo=").append(serverInfo);
     sb.append(", playerInfos=").append(playerInfos);
     sb.append('}');
     return sb.toString();
+  }
+}
+
+class ResultBasics {
+  long[] latencies = new long[4];
+  InetSocketAddress from;
+  ResultBasics(ServerResponse response){
+    this.from = response.from();
   }
 }

@@ -1,6 +1,5 @@
 package com.goodgamenow.source.serverquery.websocketserver;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.goodgamenow.source.serverquery.MasterQuery;
@@ -33,21 +32,11 @@ public class WebSocketHandler
   protected void encode(ChannelHandlerContext ctx,
                         QueryResult result,
                         List<Object> out) throws Exception {
-    String data = result.toString();
-    TextWebSocketFrame textWebSocketFrame = new TextWebSocketFrame(data);
+    String json = result.toJson(mapper);
+    TextWebSocketFrame textWebSocketFrame = new TextWebSocketFrame(json);
     out.add(textWebSocketFrame);
   }
 
-  private String toJson(QueryResult queryResult) {
-    String result = "";
-    ObjectMapper mapper = new ObjectMapper();
-    try {
-      result = mapper.writeValueAsString(queryResult.serverInfo().get());
-    } catch (JsonProcessingException e) {
-      e.printStackTrace();
-    }
-    return result;
-  }
 
   @Override
   protected void decode(ChannelHandlerContext ctx,

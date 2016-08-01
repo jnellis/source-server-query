@@ -11,6 +11,22 @@ public class PlayerInfo {
   final int score;
   final float duration;
 
+  public int getIndex() {
+    return index;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public int getScore() {
+    return score;
+  }
+
+  public float getDuration() {
+    return duration;
+  }
+
   public PlayerInfo(int index, String name, int score, float duration){
     this.index = index;
     this.name = name;

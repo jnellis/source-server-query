@@ -10,6 +10,8 @@ import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.codec.http.websocketx.extensions.compression
     .WebSocketServerCompressionHandler;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.ssl.SslContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -50,9 +52,9 @@ public class WebSocketServerChannelInitializer
             .addLast(new WebSocketServerProtocolHandler(webSocketPath, null,
                                                         true))
             .addLast(new WebSocketIndexPageHandler(webSocketPath))
+            .addLast(new LoggingHandler(LogLevel.DEBUG))
             .addLast(new WebSocketHandler())
             .addLast(new MasterQueryBootstrapHandler(udpLoop))
-       //     .addLast(new LoggingHandler(LogLevel.INFO))
             .addLast(new ServerQueryBootstrapHandler(udpLoop))
     ;
   }

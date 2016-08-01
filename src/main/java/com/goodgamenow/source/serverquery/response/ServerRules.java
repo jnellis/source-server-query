@@ -13,6 +13,10 @@ import java.util.Properties;
  */
 public class ServerRules extends ServerResponse {
 
+  public Properties getProperties() {
+    return properties;
+  }
+
   public final Properties properties = new Properties();
 
   public ServerRules(InetSocketAddress from) {
@@ -24,24 +28,6 @@ public class ServerRules extends ServerResponse {
     return properties.toString();
   }
 
-//  @Override
-//  public ResultMerger resultMerger() {
-//    return resultMap ->
-//        resultMap.merge(
-//            from(),
-//            new QueryResult(this),
-//            (orig, nu) -> orig.serverRules(nu.serverRules().get()));
-//  }
-//
-//  @Override
-//  public QueryUpdater queryUpdater() {
-//    return query -> new ServerQuery(query.address,
-//                                    query.serverInfoRequest,
-//                                    query.playerInfoRequest,
-//                                    ServerQuery.ServerRulesRequest.NOT_NEEDED,
-//                                    ServerQuery.Retries.MAX_RETRIES,
-//                                    query.challenge);
-//  }
 
   @Override
   public ServerQuery update(ServerQuery query) {

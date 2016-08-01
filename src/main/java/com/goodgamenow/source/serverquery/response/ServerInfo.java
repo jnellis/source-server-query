@@ -11,63 +11,147 @@ import java.util.Map;
  * Date: 5/24/2015
  * Time: 9:32 AM
  */
-public class ServerInfo extends ServerResponse{
+public class ServerInfo extends ServerResponse {
 
-  byte protocol;
+  private byte protocol;
 
-  String name;
+  private String name;
 
-  String map;
+  private String map;
 
-  String folder;
+  private String folder;
 
-  String game;
+  private String game;
 
-  short appId;
+  private short appId;
 
-  byte players;
+  private byte players;
 
-  byte maxPlayers;
+  private byte maxPlayers;
 
-  byte bots;
+  private byte bots;
 
-  byte serverType;
+  private byte serverType;
 
-  byte os;
+  private byte os;
 
-  byte visibility;
+  private byte visibility;
 
-  byte vac;
+  private byte vac;
 
   // the Ship specific fields
-  byte mode;
+  private byte mode;
 
-  byte witness;
+  private byte witness;
 
-  byte duration;
+  private byte duration;
 
-  String version;
+  private String version;
 
-  byte extraDataFlag;
+  private byte extraDataFlag;
 
   // potential fields based on extraDataFlag
-  short gamePort;
+  private short gamePort;
 
-  long serverSteamId;
+  private long serverSteamId;
 
-  short specPort;
+  private short specPort;
 
-  String specName;
+  private String specName;
 
-  String keywords;
+  private String keywords;
 
-  long gameId;
+  private long gameId;
 
   public ServerInfo(InetSocketAddress from) {
     super(from);
   }
 
-  public byte protocol() {
+  public String getFolder() {
+    return folder;
+  }
+
+  public String getGame() {
+    return game;
+  }
+
+  public short getAppId() {
+    return appId;
+  }
+
+  public byte getPlayers() {
+    return players;
+  }
+
+  public byte getMaxPlayers() {
+    return maxPlayers;
+  }
+
+  public byte getBots() {
+    return bots;
+  }
+
+  public byte getServerType() {
+    return serverType;
+  }
+
+  public byte getOs() {
+    return os;
+  }
+
+  public byte getVisibility() {
+    return visibility;
+  }
+
+  public byte getVac() {
+    return vac;
+  }
+
+  public byte getMode() {
+    return mode;
+  }
+
+  public byte getWitness() {
+    return witness;
+  }
+
+  public byte getDuration() {
+    return duration;
+  }
+
+  public String getVersion() {
+    return version;
+  }
+
+  public byte getExtraDataFlag() {
+    return extraDataFlag;
+  }
+
+  public short getGamePort() {
+    return gamePort;
+  }
+
+  public long getServerSteamId() {
+    return serverSteamId;
+  }
+
+  public short getSpecPort() {
+    return specPort;
+  }
+
+  public String getSpecName() {
+    return specName;
+  }
+
+  public String getKeywords() {
+    return keywords;
+  }
+
+  public long getGameId() {
+    return gameId;
+  }
+
+  public byte getProtocol() {
     return protocol;
   }
 
@@ -76,7 +160,7 @@ public class ServerInfo extends ServerResponse{
     return this;
   }
 
-  public String name() {
+  public String getName() {
     return name;
   }
 
@@ -85,7 +169,7 @@ public class ServerInfo extends ServerResponse{
     return this;
   }
 
-  public String map() {
+  public String getMap() {
     return map;
   }
 
@@ -94,26 +178,16 @@ public class ServerInfo extends ServerResponse{
     return this;
   }
 
-  public String folder() {
-    return folder;
-  }
 
   public ServerInfo folder(String folder) {
     this.folder = folder;
     return this;
   }
 
-  public String game() {
-    return game;
-  }
 
   public ServerInfo game(String game) {
     this.game = game;
     return this;
-  }
-
-  public short appId() {
-    return appId;
   }
 
   public ServerInfo appId(short appId) {
@@ -126,26 +200,16 @@ public class ServerInfo extends ServerResponse{
     return this;
   }
 
-  public byte maxPlayers() {
-    return maxPlayers;
-  }
 
   public ServerInfo maxPlayers(byte maxPlayers) {
     this.maxPlayers = maxPlayers;
     return this;
   }
 
-  public byte bots() {
-    return bots;
-  }
 
   public ServerInfo bots(byte bots) {
     this.bots = bots;
     return this;
-  }
-
-  public byte serverType() {
-    return serverType;
   }
 
   public ServerInfo serverType(byte serverType) {
@@ -153,125 +217,82 @@ public class ServerInfo extends ServerResponse{
     return this;
   }
 
-  public byte os() {
-    return os;
-  }
 
   public ServerInfo os(byte os) {
     this.os = os;
     return this;
   }
 
-  public byte visibility() {
-    return visibility;
-  }
 
   public ServerInfo visibility(byte visibility) {
     this.visibility = visibility;
     return this;
   }
 
-  public byte vac() {
-    return vac;
-  }
 
   public ServerInfo vac(byte vac) {
     this.vac = vac;
     return this;
   }
 
-  public byte mode() {
-    return mode;
-  }
 
   public ServerInfo mode(byte mode) {
     this.mode = mode;
     return this;
   }
 
-  public byte witness() {
-    return witness;
-  }
 
   public ServerInfo witness(byte witness) {
     this.witness = witness;
     return this;
   }
 
-  public byte duration() {
-    return duration;
-  }
 
   public ServerInfo duration(byte duration) {
     this.duration = duration;
     return this;
   }
 
-  public String version() {
-    return version;
-  }
 
   public ServerInfo version(String version) {
     this.version = version;
     return this;
   }
 
-  public byte extraDataFlag() {
-    return extraDataFlag;
-  }
 
   public ServerInfo extraDataFlag(byte extraDataFlag) {
     this.extraDataFlag = extraDataFlag;
     return this;
   }
 
-  public short gamePort() {
-    return gamePort;
-  }
 
   public ServerInfo gamePort(short gamePort) {
     this.gamePort = gamePort;
     return this;
   }
 
-  public long serverSteamId() {
-    return serverSteamId;
-  }
 
   public ServerInfo serverSteamId(long serverSteamId) {
     this.serverSteamId = serverSteamId;
     return this;
   }
 
-  public short specPort() {
-    return specPort;
-  }
 
   public ServerInfo specPort(short specPort) {
     this.specPort = specPort;
     return this;
   }
 
-  public String specName() {
-    return specName;
-  }
 
   public ServerInfo specName(String specName) {
     this.specName = specName;
     return this;
   }
 
-  public String keywords() {
-    return keywords;
-  }
 
   public ServerInfo keywords(String keywords) {
     this.keywords = keywords;
     return this;
-  }
-
-  public long gameId() {
-    return gameId;
   }
 
   public ServerInfo gameId(long gameId) {
@@ -279,30 +300,6 @@ public class ServerInfo extends ServerResponse{
     return this;
   }
 
-//  @Override
-//  public ResultMerger resultMerger() {
-//    return resultMap ->
-//        resultMap.merge(from(),
-//                        new QueryResult(this),
-//                        (orig, nu) -> orig.serverInfo(nu.serverInfo().get()));
-//  }
-
-//  @Override
-//  public QueryUpdater queryUpdater() {
-//    return query -> {
-//      // if the server has no players we can turn off playerInfo request
-//      ServerQuery.PlayerInfoRequest playerInfoRequest =
-//          (players() < 1) ? ServerQuery.PlayerInfoRequest.NOT_NEEDED
-//                          : query.playerInfoRequest;
-//
-//      return new ServerQuery(query.address,
-//                             ServerQuery.ServerInfoRequest.NOT_NEEDED,
-//                             playerInfoRequest,
-//                             query.serverRulesRequest,
-//                             ServerQuery.Retries.MAX_RETRIES,   // reset retries
-//                             query.challenge);
-//    };
-//  }
 
   @Override
   public ServerQuery update(ServerQuery query) {
@@ -325,11 +322,11 @@ public class ServerInfo extends ServerResponse{
     return resultMap.merge(
         from(),
         new QueryResult(this),
-        (orig, nu) -> orig.serverInfo(nu.serverInfo().get()));
+        (orig, nu) -> orig.serverInfo(nu.getServerInfo().get()));
   }
 
 
-  public byte players() {
+  private byte players() {
     return players;
   }
 
@@ -338,7 +335,7 @@ public class ServerInfo extends ServerResponse{
     return "ServerInfo{" + "from=" + from() + ", timeReceived=" +
         timeReceived() + ", protocol=" + protocol + ", name='" + name + '\''
         + ", map='" + map + '\'' + ", folder='" + folder + '\'' + ", game='"
-        + game + '\'' + ", appId=" + appId + ", players=" + players + ", " +
+        + game + '\'' + ", appId=" + appId + ", getPlayers=" + players + ", " +
         "maxPlayers=" + maxPlayers + ", bots=" + bots + ", serverType=" +
         serverType + ", os=" + os + ", visibility=" + visibility + ", vac=" +
         vac + ", mode=" + mode + ", witness=" + witness + ", duration=" +

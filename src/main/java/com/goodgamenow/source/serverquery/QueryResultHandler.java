@@ -45,6 +45,7 @@ public class QueryResultHandler
     reconcileMap.computeIfPresent(addrKey, (notUsed, query) -> {
       // record latency
       response.latency(response.timeReceived() - query.startTime.inMillis());
+
       logger.debug("latency {} - {}ms", addrKey, response.latency());
 
       ServerQuery updatedQuery = response.update(query);

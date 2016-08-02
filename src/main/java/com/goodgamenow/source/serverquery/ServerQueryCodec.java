@@ -311,19 +311,21 @@ class ServerQueryCodec
     assertNotTooManyPlayers(numPlayers);
 
     List<PlayerInfo> players =
-        IntStream.range(0, numPlayers)
-                 .mapToObj(i -> {
-                   int index = buf.readByte();
-                   String name = decodeString(buf);
-                   int score = buf.readInt();
-                   float duration = buf.readFloat();
-                   return new PlayerInfo(index, name, score, duration);
-                 })
+        IntStream.range(1, numPlayers)
+                 .mapToObj(i -> decodePlayerInfo(buf))
                  .collect(Collectors.toList());
 
     playerInfos.players(players);
 
     return playerInfos;
+  }
+
+  private PlayerInfo decodePlayerInfo(ByteBuf buf){
+    int index = buf.readByte();
+    String name = decodeString(buf);
+    int score = buf.readInt();
+    float duration = buf.readFloat();
+    return new PlayerInfo(index, name, score, duration);
   }
 
   private void assertNotTooManyPlayers(int numPlayers) {

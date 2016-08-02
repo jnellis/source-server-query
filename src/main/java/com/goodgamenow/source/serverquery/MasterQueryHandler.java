@@ -14,6 +14,8 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.DatagramPacket;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
@@ -34,6 +36,8 @@ import java.util.List;
  */
 class MasterQueryHandler
     extends SimpleChannelInboundHandler<DatagramPacket> {
+
+  private static Logger logger = LogManager.getLogger();
 
   /**
    * Master server location
@@ -167,8 +171,7 @@ class MasterQueryHandler
     return String.valueOf(decodeAddress(buf) + ':' + decodePort(buf));
   }
 
-  private final InetSocketAddress createInetSocketAddress(String
-                                                              serverAddress) {
+  private InetSocketAddress createInetSocketAddress(String serverAddress) {
     String[] addy = serverAddress.split(":");
     int port = Integer.parseInt(addy[1]);
     return new InetSocketAddress(addy[0], port);
@@ -218,7 +221,7 @@ class MasterQueryHandler
   }
 
   private static int decodePort(ByteBuf buf) {
-    return buf.readShort();
+    return buf.readUnsignedShort();
   }
 
 

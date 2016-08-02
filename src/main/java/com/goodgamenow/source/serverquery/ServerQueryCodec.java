@@ -296,8 +296,9 @@ class ServerQueryCodec
     if (len > MAX_DECODED_STRING_LENGTH) {
       throw new IllegalStateException("Unusually large string detected.");
     }
+    int index = buf.readerIndex();
     //todo: check for malformed utf
-    String result = buf.toString(0,len,Charset.forName("UTF-8"));
+    String result = buf.toString(index,len,Charset.forName("UTF-8"));
     buf.skipBytes(len+1);//skip null terminator
     return result;
   }

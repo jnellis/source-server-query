@@ -48,6 +48,8 @@ class ServerQueryCodec
 
   private static final byte SERVERRULES_REPLY_HEADER_CODE = 0x45;
 
+  private static final byte OBSOLETE_GOLD_SOURCE_HEADER_CODE = 0x6D;
+
   // request headers
   private static final byte[] A2S_INFO_REQ_HEADER
       = {-1, -1, -1, -1, 0x54
@@ -146,6 +148,9 @@ class ServerQueryCodec
       case SERVERRULES_REPLY_HEADER_CODE:
         decoder = this::decodeServerRules;
         break;
+      case OBSOLETE_GOLD_SOURCE_HEADER_CODE:
+        logger.info("detected obsolete gold source server.");
+        throw new UnsupportedOperationException("No gold source decoder yet.");
       default:
         throw new IllegalStateException("Unexpected payload header type: " +
                                             Integer.toHexString(headerType));
@@ -298,8 +303,8 @@ class ServerQueryCodec
     }
     int index = buf.readerIndex();
     //todo: check for malformed utf
-    String result = buf.toString(index,len,Charset.forName("UTF-8"));
-    buf.skipBytes(len+1);//skip null terminator
+    String result = buf.toString(index, len, Charset.forName("UTF-8"));
+    buf.skipBytes(len + 1);//skip null terminator
     return result;
   }
 
@@ -320,18 +325,18 @@ class ServerQueryCodec
     return playerInfos;
   }
 
-  private PlayerInfo decodePlayerInfo(ByteBuf buf){
+  private void assertNotTooManyPlayers(int numPlayers) {
+    if (numPlayers > MAX_PLAYERS) {
+      throw new DecodeException("Too many players:" + numPlayers);
+    }
+  }
+
+  private PlayerInfo decodePlayerInfo(ByteBuf buf) {
     int index = buf.readByte();
     String name = decodeString(buf);
     int score = buf.readInt();
     float duration = buf.readFloat();
     return new PlayerInfo(index, name, score, duration);
-  }
-
-  private void assertNotTooManyPlayers(int numPlayers) {
-    if (numPlayers > MAX_PLAYERS) {
-      throw new DecodeException("Too many players:" + numPlayers);
-    }
   }
 
   private ChallengeResponse decodeChallenge(InetSocketAddress from,

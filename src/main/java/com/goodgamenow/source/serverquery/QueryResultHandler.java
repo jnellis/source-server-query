@@ -61,8 +61,13 @@ public class QueryResultHandler
     // update the query result.
     QueryResult newVal = response.mergeInto(resultMap);
 
+    // route to a parent channel when result is finished.
     parentContext.filter(pctx -> !reconcileMap.containsKey(addrKey))
-                 .ifPresent(pctx -> pctx.write(newVal));
+                 .ifPresent(pctx -> {
+                   pctx.write(newVal);
+                   resultMap.remove(addrKey);
+                 });
+
   }
 
   @Override

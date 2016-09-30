@@ -109,7 +109,7 @@ public class QueryResult extends ResultBasics{
       OptionalDouble avgLatency = averageLatency();
       if (avgLatency.isPresent()) {
         writer.append(", \"avgLatency\":");
-        mapper.writeValue(writer, avgLatency.getAsDouble());
+        mapper.writeValue(writer, (int)(avgLatency.getAsDouble()));
       }
       writer.append("}").flush();
       return writer.toString();

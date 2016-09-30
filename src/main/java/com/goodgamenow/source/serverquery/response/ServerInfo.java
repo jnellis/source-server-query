@@ -332,18 +332,36 @@ public class ServerInfo extends ServerResponse {
 
   @Override
   public String toString() {
-    return "ServerInfo{" + "from=" + from() + ", timeReceived=" +
-        timeReceived() + ", protocol=" + protocol + ", name='" + name + '\''
-        + ", map='" + map + '\'' + ", folder='" + folder + '\'' + ", game='"
-        + game + '\'' + ", appId=" + appId + ", getPlayers=" + players + ", " +
-        "maxPlayers=" + maxPlayers + ", bots=" + bots + ", serverType=" +
-        serverType + ", os=" + os + ", visibility=" + visibility + ", vac=" +
-        vac + ", mode=" + mode + ", witness=" + witness + ", duration=" +
-        duration + ", version='" + version + '\'' + ", extraDataFlag=" +
-        extraDataFlag + ", gamePort=" + gamePort + ", serverSteamId=" +
-        serverSteamId + ", specPort=" + specPort + ", specName='" + specName
-        + '\'' + ", keywords='" + keywords + '\'' + ", gameId=" + gameId + ',' +
-        " latency=" + latency() + '}';
+    return "{\"_class\":\"ServerInfo\", " +
+        "\"protocol\":\"" + protocol + "\"" + ", " +
+        "\"name\":" + (name == null ? "null" : "\"" + name + "\"") + ", " +
+        "\"map\":" + (map == null ? "null" : "\"" + map + "\"") + ", " +
+        "\"folder\":" + (folder == null ? "null"
+                                        : "\"" + folder + "\"") + ", " +
+        "\"game\":" + (game == null ? "null" : "\"" + game + "\"") + ", " +
+        "\"appId\":\"" + appId + "\"" + ", " +
+        "\"players\":\"" + players + "\"" + ", " +
+        "\"maxPlayers\":\"" + maxPlayers + "\"" + ", " +
+        "\"bots\":\"" + bots + "\"" + ", " +
+        "\"serverType\":\"" + serverType + "\"" + ", " +
+        "\"os\":\"" + os + "\"" + ", " +
+        "\"visibility\":\"" + visibility + "\"" + ", " +
+        "\"vac\":\"" + vac + "\"" + ", " +
+        "\"mode\":\"" + mode + "\"" + ", " +
+        "\"witness\":\"" + witness + "\"" + ", " +
+        "\"duration\":\"" + duration + "\"" + ", " +
+        "\"version\":" + (version == null ? "null"
+                                          : "\"" + version + "\"") + ", " +
+        "\"extraDataFlag\":\"" + extraDataFlag + "\"" + ", " +
+        "\"gamePort\":\"" + gamePort + "\"" + ", " +
+        "\"serverSteamId\":\"" + serverSteamId + "\"" + ", " +
+        "\"specPort\":\"" + specPort + "\"" + ", " +
+        "\"specName\":" + (specName == null ? "null"
+                                            : "\"" + specName + "\"") + ", " +
+        "\"keywords\":" + (keywords == null ? "null"
+                                            : "\"" + keywords + "\"") + ", " +
+        "\"gameId\":\"" + gameId + "\"" +
+        "}";
   }
 
 }

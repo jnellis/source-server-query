@@ -111,19 +111,24 @@ class ServerQueryCodec
     ByteBuf buf = packet.content().order(ByteOrder.LITTLE_ENDIAN);
 
     int type = buf.readInt();
-    switch (type) {
-      case PACKET_HEADER:
-        Optional.ofNullable(decodePayload(ctx, packet))
-                .ifPresent(out::add);
-        break;
-      case SPLIT_PACKET_INDICATOR:
-        Optional.ofNullable(resolveSplitPacket(ctx, packet))
-                .ifPresent(out::add);
-        break;
-      default:
-        logger.warn("unknown packet type: {}", buf);
-        // not our packet, not our business
-        out.add(packet);
+    try {
+      switch (type) {
+        case PACKET_HEADER:
+          Optional.ofNullable(decodePayload(ctx, packet))
+                  .ifPresent(out::add);
+          break;
+        case SPLIT_PACKET_INDICATOR:
+          Optional.ofNullable(resolveSplitPacket(ctx, packet))
+                  .ifPresent(out::add);
+          break;
+        default:
+          logger.warn("unknown packet type: {}", buf);
+          // not our packet, not our business
+          out.add(packet);
+      }
+    }
+    catch (Exception e){
+      logger.warn(e.getMessage());
     }
   }
 

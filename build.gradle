@@ -1,0 +1,42 @@
+group 'com.goodgamenow'
+version '0.1'
+
+
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'idea'
+apply plugin: 'groovy'
+
+idea {
+  module {
+    downloadSources = true
+    downloadJavadoc = true
+  }
+}
+
+compileJava.options.compilerArgs << "-Xlint:unchecked"
+//<< "-Xlint:deprecation"
+mainClassName = 'com.goodgamenow.source.serverquery.websocketserver.GameServerRequestServer'
+
+
+
+repositories {
+  jcenter()
+}
+
+dependencies {
+  compile 'com.google.guava:guava:18.0'
+  compile 'com.google.inject:guice:4.0'
+  compile 'io.netty:netty-all:4.1.2.Final'
+  compile 'net.jcip:jcip-annotations:1.0'
+  compile 'org.itadaki:bzip2:0.9.1'
+  compile 'org.codehaus.groovy:groovy-all:2.4.6'
+  compile 'com.fasterxml.jackson.core:jackson-core:2.8.0'
+  compile 'com.fasterxml.jackson.core:jackson-annotations:2.8.0'
+  compile 'com.fasterxml.jackson.core:jackson-databind:2.8.0'
+
+  compile 'org.apache.logging.log4j:log4j-api:2.6'
+  compile 'org.apache.logging.log4j:log4j-core:2.6'
+
+  testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
+}
